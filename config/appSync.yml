@@ -1,6 +1,18 @@
 appSync:
   name: ${self:custom.project}-${self:custom.stage}
-  authenticationType: API_KEY
+  authenticationType: AMAZON_COGNITO_USER_POOLS
+  additionalAuthenticationProviders:
+    - authenticationType: API_KEY
+    - authenticationType: AMAZON_COGNITO_USER_POOLS
+      userPoolConfig:
+        awsRegion: ${self:provider.region}
+        userPoolId:
+          Fn::ImportValue: "IQOS-RETAIL-UserPoolId-pre"
+  userPoolConfig:
+    awsRegion: ${self:provider.region}
+    defaultAction: ALLOW
+    userPoolId:
+      Fn::ImportValue: "IQOS-UserPoolId-pre"
   mappingTemplatesLocation: templates
   mappingTemplates: ${file(config/templates/.compiled.yml)}
   # functionConfigurations: ${file(config/templates/pipeline.yml):pipeline_functions}
