@@ -3,7 +3,7 @@
 #set($id = $ctx.args.input.gtin)
 #set($channel = $util.defaultIfNullOrEmpty($ctx.args.input.channel, "ECOMM"))
 #set($attributes.doc_type = $util.dynamodb.toDynamoDB("SKU"))
-#set($attributes.date_created = $util.dynamodb.toDynamoDB($now))
+#set($attributes.date_created = $util.dynamodb.toDynamoDB("$now"))
 #set($attributes.filters = $util.dynamodb.toDynamoDB("${channel}SKU_$now"))
 
 #set($sort = "SKU")

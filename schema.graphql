@@ -19,9 +19,9 @@ enum SKUType {
 }
 
 type Query {
-  skus(channel: ChannelType, next_token: String): ITEMConnection @aws_cognito_user_pools
+  skus(channel: ChannelType, next_token: String): SKUConnection @aws_cognito_user_pools
   sku(id: String!): SKU @aws_cognito_user_pools
-  transactions(warehouse_id: ID!, date_filter: TimestampFilter): SaleTransactionConnection @aws_cognito_user_pools
+  transactions(warehouse_id: ID!, date_filter: TimestampFilter): TransactionConnection @aws_cognito_user_pools
   transactionSpecific(id: ID!): Transaction @aws_cognito_user_pools
   warehouse(id: String): Warehouse @aws_cognito_user_pools
   warehouses(channel: ChannelType, type: WarehouseType, next_token: String): WarehouseConnection @aws_cognito_user_pools
@@ -51,7 +51,6 @@ type Transaction @aws_cognito_user_pools {
   id: ID
   transaction_id: ID
   warehouse_id: ID
-  items: [LineItem]
   remarks: String
   cegid_no: String
   transaction_type: TransactionType
@@ -97,7 +96,6 @@ input TransactionInput {
   cegid_no: String
   warehouse_id: ID
   remarks: String
-  items: [LineItemInput]
   type: String
   customer_information: CustomerInformationInput
   transaction_type: TransactionType
@@ -127,6 +125,16 @@ type WarehouseConnection @aws_cognito_user_pools {
   next_token: String
 }
 
+type SKUConnection @aws_cognito_user_pools {
+  items: [SKU]
+  next_token: String
+}
+
+type TransactionConnection @aws_cognito_user_pools {
+  items: [Transaction]
+  next_token: String
+}
+
 type Warehouse @aws_cognito_user_pools {
   id: String
   name: String
@@ -153,41 +161,6 @@ enum WarehouseType {
 enum ChannelType {
   ECOMM
   DIRECT_RETAIL
-}
-
-type ITEMType {
-  id: ID!
-  name: String
-  description: String
-}
-
-input ITEMTypeInput {
-  id: ID
-  name: String
-  description: String
-}
-
-type ITEMConnection {
-  items: [ITEMType]
-  nextToken: String
-}
-
-type SaleTransactionConnection {
-  items: [Transaction]
-  nextToken: String
-}
-
-type LineItem {
-  id: ID!
-  sku: String
-  quantity: Int
-  price: Float
-}
-
-input LineItemInput {
-  sku: String!
-  quantity: Int!
-  price: Float
 }
 
 schema {

@@ -2,7 +2,7 @@
 #set($now = $util.time.nowEpochMilliSeconds())
 #set($id =  $util.defaultIfNullOrEmpty($ctx.args.id, "TRANSACTION_$now"))
 #set($attributes.doc_type = $util.dynamodb.toDynamoDB("TRANSACTION"))
-#set($attributes.date_created = $util.dynamodb.toDynamoDB($now))
+#set($attributes.date_created = $util.dynamodb.toDynamoDB("$now"))
 #set($attributes.filters = $util.dynamodb.toDynamoDB("PENDING_TRANSFER_$now"))
 #set($attributes.status = $util.dynamodb.toDynamoDB("PENDING"))
 #set($attributes.type = $util.dynamodb.toDynamoDB("TRANSFER"))
