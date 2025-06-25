@@ -5,7 +5,7 @@ type SKU @aws_cognito_user_pools {
     description: String
     sku: String
     unit_of_measure: String
-    type: ITEMType
+    type: SKUType
     gtin: String
     price: Float
     channel: ChannelType
@@ -19,7 +19,7 @@ enum SKUType {
 }
 
 type Query {
-    skus(channel: ChannelType, next_token: String): ITEMConnection
+    skus(channel: ChannelType, next_token: String): SKU
     @aws_cognito_user_pools
 
     sku(id: String!): SKU @aws_cognito_user_pools

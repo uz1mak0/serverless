@@ -2,7 +2,6 @@ type Transaction @aws_cognito_user_pools {
     id: ID
     transaction_id: ID
     warehouse_id: ID
-    items: [LineItem]
     remarks: String
     cegid_no: String
     transaction_type: TransactionType
@@ -44,7 +43,7 @@ type Mutation {
 }
 
 type Query {
-    transactions(warehouse_id: ID! date_filter: TimestampFilter): SaleTransactionConnection @aws_cognito_user_pools
+    transactions(warehouse_id: ID! date_filter: TimestampFilter): Transaction @aws_cognito_user_pools
     transactionSpecific(id: ID!): Transaction @aws_cognito_user_pools
 }
 
@@ -60,7 +59,6 @@ input TransactionInput {
   cegid_no: String
   warehouse_id: ID
   remarks: String
-  items: [LineItemInput]
   type: String
   customer_information: CustomerInformationInput
   transaction_type: TransactionType
@@ -83,4 +81,8 @@ input TransmitItemInput {
 input PulloutItemInput {
   quantity: Int!
   warehouse_id: ID!
+}
+
+input LineItemInput {
+
 }

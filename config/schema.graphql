@@ -5,7 +5,7 @@ type SKU @aws_cognito_user_pools {
   description: String
   sku: String
   unit_of_measure: String
-  type: ITEMType
+  type: SKUType
   gtin: String
   price: Float
   channel: ChannelType
@@ -41,7 +41,7 @@ input SkuInput {
   name: String
   description: String
   unit_of_measure: String
-  type: ITEMTypeInput
+  type: SKUType
   price: Float
   gtin: String!
   channel: ChannelType
@@ -159,14 +159,12 @@ type ITEMType {
   id: ID!
   name: String
   description: String
-  # Add other fields as needed
 }
 
 input ITEMTypeInput {
   id: ID
   name: String
   description: String
-  # Add other fields as needed
 }
 
 type ITEMConnection {
@@ -184,14 +182,12 @@ type LineItem {
   sku: String
   quantity: Int
   price: Float
-  # Add other fields as needed
 }
 
 input LineItemInput {
   sku: String!
   quantity: Int!
   price: Float
-  # Add other fields as needed
 }
 
 schema {
