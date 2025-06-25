@@ -1,0 +1,9 @@
+appSync:
+  name: ${self:custom.project}-${self:custom.stage}
+  authenticationType: API_KEY
+  mappingTemplatesLocation: templates
+  mappingTemplates: ${file(config/templates/.compiled.yml)}
+  # functionConfigurations: ${file(config/templates/pipeline.yml):pipeline_functions}
+  schema: schema.graphql
+  dataSources: ${file(config/dataSources.yml):dataSources}
+  # substitutions: ${file(config/environmentVars.yml)}

@@ -1,0 +1,15 @@
+#if($ctx.error)
+    $util.error($ctx.error.message, $ctx.error.type)
+#end
+
+#set($result = $ctx.result)
+#set($recon = $util.defaultIfNull($result.recon, 0))
+#set($transmittal = $util.defaultIfNull($result.transmittal, 0))
+#set($committed = $util.defaultIfNull($result.committed, 0))
+#set($released = $util.defaultIfNull($result.released, 0))
+#set($transferred = $util.defaultIfNull($result.transferred, 0))
+#set($pullout = $util.defaultIfNull($result.pullout, 0))
+#set($returned = $util.defaultIfNull($result.returned, 0))
+
+#set($result["total_items"] = $recon + $transmittal - $committed - $released - $transferred - $pullout + $returned)
+$util.toJson($result)

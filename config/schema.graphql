@@ -1,0 +1,19 @@
+schema {
+  query: Query
+
+  # mutation: Mutation
+}
+
+type Query{ 
+  item(id:String):Item
+  warehouse: warehouse
+}
+
+type Item {
+  id: String
+  name: String
+}
+
+type warehouse {
+    id: String
+}

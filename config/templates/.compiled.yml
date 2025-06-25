@@ -1,0 +1,63 @@
+  # WAREHOUSE
+
+- dataSource: RawTable
+  type: Mutation
+  field: warehouseCreate
+  response: warehouse-response.vtl
+
+- dataSource: RawTable
+  type: Mutation
+  field: warehouseUpdate
+  response: warehouse-response.vtl
+
+- dataSource: RawTable
+  type: Query
+  field: warehouse
+  response: warehouse-response.vtl
+
+- dataSource: RawTable
+  type: Query
+  field: warehouses
+  response: warehouse-list-response.vtl
+
+
+  # ITEM
+
+- dataSource: RawTable
+  type: Query
+  field: skus
+  response: list-response.vtl
+
+- dataSource: RawTable
+  type: Query
+  field: sku
+  response: response.vtl
+
+- dataSource: RawTable
+  type: Mutation
+  field: skuCreate
+  response: response.vtl
+
+- dataSource: RawTable
+  type: Mutation
+  field: skuUpdate
+  response: response.vtl
+
+
+  # TRANSACTION
+
+- dataSource: RawTable
+  type: Mutation
+  field: transactionCreate
+  response: response.vtl
+
+- dataSource: RawTable
+  type: Query
+  field: transactions
+  response: response.vtl
+
+- dataSource: RawTable
+  type: Query
+  field: transactionSpecific
+  response: response.vtl
+

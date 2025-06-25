@@ -1,0 +1,51 @@
+type Mutation {
+    warehouseCreate(input: WarehouseInput): Warehouse
+    @aws_cognito_user_pools
+
+    warehouseUpdate(input: WarehouseInput): Warehouse
+    @aws_cognito_user_pools
+}
+
+type Query {
+  warehouse(id: String): Warehouse @aws_cognito_user_pools
+
+  warehouses(
+    channel: ChannelType
+    type: WarehouseType
+    next_token: String
+  ): WarehouseConnection @aws_cognito_user_pools
+}
+
+type WarehouseConnection @aws_cognito_user_pools {
+  items: [Warehouse]
+
+  next_token: String
+}
+
+type Warehouse @aws_cognito_user_pools {
+    id: String
+    name: String  
+    type: WarehouseType
+    total_items: Int
+    channel: ChannelType
+}
+
+input WarehouseInput {  
+    id: String!
+    name: String
+    type: WarehouseType
+    channel: ChannelType
+}
+
+enum WarehouseType {
+  WAREHOUSE
+  STORE
+  ROADSHOW
+  LENDING
+  CSC
+}
+
+enum ChannelType {
+  ECOMM
+  DIRECT_RETAIL
+}

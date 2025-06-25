@@ -1,0 +1,21 @@
+#set($attributes = $util.dynamodb.toMapValues($ctx.args.input))
+#set($now = $util.time.nowEpochMilliSeconds())
+#set($id = $ctx.args.input.id)
+#set($type = $ctx.args.input.type)
+#set($channel = $util.defaultIfNullOrEmpty($ctx.args.input.channel, "ECOMM"))
+#set($attributes.doc_type = $util.dynamodb.toDynamoDB("WAREHOUSE"))
+#set($attributes.date_created = $util.dynamodb.toDynamoDB($now))
+#set($attributes.filters = $util.dynamodb.toDynamoDB("${channel}_${type}_$now"))
+
+{
+    "version": "2017-02-28",
+    "operation": "PutItem",
+    "key": {
+        "id": $util.dynamodb.toDynamoDBJson($id),
+        "sort": $util.dynamodb.toDynamoDBJson("WAREHOUSE")
+    },
+    "attributeValues": $util.toJson($attributes),
+    "condition": {
+        "expression": "attribute_not_exists(id)"
+    }
+}

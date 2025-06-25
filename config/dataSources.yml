@@ -1,0 +1,29 @@
+dataSources:
+  - type: AMAZON_DYNAMODB
+    name: RawTable
+    config:
+      tableName: "${self:custom.project}-${self:custom.stage}"
+  - type: NONE
+    name: NONE
+
+  - type: AMAZON_DYNAMODB
+    name: ItemTable
+    config:
+      tableName: "Item-${self:custom.stage}"
+  - type: NONE
+    name: NONE
+
+  - type: AMAZON_DYNAMODB
+    name: WarehouseTable
+    config:
+      tableName: "Warehouse-${self:custom.stage}"
+  - type: NONE
+    name: NONE
+
+  - type: AMAZON_DYNAMODB
+    name: TransactionTable
+    config:
+      tableName: "Transaction-${self:custom.stage}"
+  - type: NONE
+    name: NONE
+  

@@ -1,0 +1,47 @@
+#set($expression = "SET")
+
+#set($now = $util.time.nowEpochMilliSeconds())
+
+
+#set($expSet = {})
+#set($expNames = {})
+#set($expValues = {})
+
+#set($input = $ctx.args.input)
+#set($input.date_updated = $now)
+
+#set($channel = $util.defaultIfNullOrEmpty($ctx.args.input.channel, "ECOMM"))
+
+#foreach($entry in $util.map.copyAndRemoveAllKeys($input, ["id"]).entrySet())
+    $!{expSet.put("#${entry.key}", ":${entry.key}")}
+    $!{expNames.put("#${entry.key}", "${entry.key}")}
+    $!{expValues.put(":${entry.key}", $util.dynamodb.toDynamoDB($entry.value))}
+#end
+
+#foreach($entry in $expSet.entrySet())
+    #set($expression = "${expression} ${entry.key} = ${entry.value}")
+    #if($foreach.hasNext)
+        #set($expression = "${expression},")
+    #end
+#end
+
+#if($channel == "DIRECT_RETAIL")
+    #set($sort = "SKU_DR")
+#end
+
+{
+    "version": "2017-02-28",
+    "operation": "UpdateItem",
+    "key": {
+        "id": $util.dynamodb.toDynamoDBJson($ctx.args.input.gtin),
+        "sort": $util.dynamodb.toDynamoDBJson($sort)
+    },
+    "update": {
+        "expression": "${expression}",
+        "expressionNames": $util.toJson($expNames),
+        "expressionValues": $util.toJson($expValues)
+    },
+    "condition": {
+        "expression": "attribute_exists(id)"
+    }
+}

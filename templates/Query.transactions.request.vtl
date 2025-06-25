@@ -1,0 +1,40 @@
+#set($type = "TRANSACTION")
+#set($status = $util.defaultIfNullOrEmpty($ctx.args.status, "PENDING"))
+#set($nextToken = $util.defaultIfNullOrEmpty($ctx.args.next_token, null))
+
+#set($expression = "#doc_type = :doc_type")
+#set($expNames = {
+    "#doc_type": "doc_type"
+})
+#set($expValues = {
+    ":doc_type": $util.dynamodb.toDynamoDB($type)
+})
+
+#set($date_filter = $ctx.args.date_filter)
+#if(!$util.isNullOrEmpty($date_filter))
+    #set($from = $util.time.parseFormattedToEpochMilliSeconds("${date_filter.from} 00:00:00+0800", "yyyy-MM-dd HH:mm:ssZ"))
+    #set($to = $util.time.parseFormattedToEpochMilliSeconds("${date_filter.to} 23:59:59+0800", "yyyy-MM-dd HH:mm:ssZ"))
+
+    #set($expression = "$expression and #filters between :from and :to")
+    $utils.qr($expNames.put("#filters", "filters"))
+
+    $utils.qr($expValues.put(":from", $util.dynamodb.toDynamoDB("${status}_TRANSFER_${from}")))
+    $utils.qr($expValues.put(":to", $util.dynamodb.toDynamoDB("${status}_TRANSFER_${to}")))
+#else
+    #set($expression = "$expression and begins_with(#filters, :type)")
+    $utils.qr($expNames.put("#filters", "filters"))
+    $utils.qr($expValues.put(":type", $util.dynamodb.toDynamoDB("${status}_TRANSFER")))
+#end
+
+{
+    "version": "2017-02-28",
+    "operation": "Query",
+    "index": "DocType",
+    "query": {
+        "expression": "$expression",
+        "expressionNames": $util.toJson($expNames),
+        "expressionValues": $util.toJson($expValues)
+    },
+    "nextToken": $util.toJson($nextToken),
+    "scanIndexForward": false
+}

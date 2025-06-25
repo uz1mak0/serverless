@@ -1,0 +1,43 @@
+type SKU @aws_cognito_user_pools {
+    id: String
+    sort: String
+    name: String
+    description: String
+    sku: String
+    unit_of_measure: String
+    type: ITEMType
+    gtin: String
+    price: Float
+    channel: ChannelType
+}
+
+enum SKUType {
+    ACCESSORIES
+    HEETS
+    DEVICES
+    ZYN
+}
+
+type Query {
+    skus(channel: ChannelType, next_token: String): ITEMConnection
+    @aws_cognito_user_pools
+
+    sku(id: String!): SKU @aws_cognito_user_pools
+}
+
+type Mutation {
+    skuCreate(input: SkuInput!): SKU @aws_cognito_user_pools
+    skuUpdate(input: SkuInput!): SKU @aws_cognito_user_pools
+}
+
+input SkuInput {
+    sku: String
+    sort: String
+    name: String
+    description: String
+    unit_of_measure: String
+    type: ITEMType
+    price: Float
+    gtin: String!
+    channel: ChannelType
+}

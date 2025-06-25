@@ -1,0 +1,23 @@
+#set($attributes = $util.dynamodb.toMapValues($ctx.args.input))
+#set($now = $util.time.nowEpochMilliSeconds())
+#set($id =  $util.defaultIfNullOrEmpty($ctx.args.id, "TRANSACTION_$now"))
+#set($attributes.doc_type = $util.dynamodb.toDynamoDB("TRANSACTION"))
+#set($attributes.date_created = $util.dynamodb.toDynamoDB($now))
+#set($attributes.filters = $util.dynamodb.toDynamoDB("PENDING_TRANSFER_$now"))
+#set($attributes.status = $util.dynamodb.toDynamoDB("PENDING"))
+#set($attributes.type = $util.dynamodb.toDynamoDB("TRANSFER"))
+
+#set($attributes.created_by = $util.dynamodb.toDynamoDB($ctx.identity.username))
+
+{
+    "version": "2017-02-28",
+    "operation": "PutItem",
+    "key": {
+        "id": $util.dynamodb.toDynamoDBJson($id),
+        "sort": $util.dynamodb.toDynamoDBJson("TRANSACTION")
+    },
+    "attributeValues": $util.toJson($attributes),
+    "condition": {
+        "expression": "attribute_not_exists(id)"
+    }
+}

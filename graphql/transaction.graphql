@@ -1,0 +1,86 @@
+type Transaction @aws_cognito_user_pools {
+    id: ID
+    transaction_id: ID
+    warehouse_id: ID
+    items: [LineItem]
+    remarks: String
+    cegid_no: String
+    transaction_type: TransactionType
+
+    created_by: ID
+    updated_by: ID
+    date_created: AWSTimestamp
+    date_updated: AWSTimestamp
+
+    order_date: String
+    customer_information: CustomerInformation
+    payment_type: String
+    payments_info: [PaymentInfo]
+    total_price: Float
+    type: String
+    date_input: AWSTimestamp
+}
+
+type PaymentInfo {
+  type: String
+  price: Float
+}
+
+type CustomerInformation {
+  last_name: String
+  first_name: String
+  mobile_number: String
+  email: String
+}
+
+enum TransactionType {
+    TRANSMITTAL
+    PULLOUT
+}
+
+type Mutation {
+    transactionCreate(input: TransactionInput!): Transaction
+    @aws_cognito_user_pools
+}
+
+type Query {
+    transactions(warehouse_id: ID! date_filter: TimestampFilter): SaleTransactionConnection @aws_cognito_user_pools
+    transactionSpecific(id: ID!): Transaction @aws_cognito_user_pools
+}
+
+input TimestampFilter {
+  from: AWSTimestamp!
+  to: AWSTimestamp!
+}
+
+input TransactionInput {
+  date_created: AWSTimestamp
+  created_by: String
+  transaction_no: ID
+  cegid_no: String
+  warehouse_id: ID
+  remarks: String
+  items: [LineItemInput]
+  type: String
+  customer_information: CustomerInformationInput
+  transaction_type: TransactionType
+  payment_type: String
+  total_price: Float
+}
+
+input CustomerInformationInput {
+  last_name: String
+  first_name: String
+  mobile_number: String
+  email: String
+}
+
+input TransmitItemInput {
+  quantity: Int!
+  warehouse_id: ID!
+}
+
+input PulloutItemInput {
+  quantity: Int!
+  warehouse_id: ID!
+}

@@ -1,0 +1,38 @@
+// Create an item
+await fetch('/user', {
+  method: 'POST',
+  body: JSON.stringify({
+    action: 'createItem',
+    data: {
+      name: 'Product 1',
+      sku: 'SKU001',
+      price: 99.99
+    }
+  })
+});
+
+// Create a warehouse
+await fetch('/user', {
+  method: 'POST',
+  body: JSON.stringify({
+    action: 'createWarehouse',
+    data: {
+      name: 'Main Warehouse',
+      location: 'City Center'
+    }
+  })
+});
+
+// Transmit items
+await fetch('/user', {
+  method: 'POST',
+  body: JSON.stringify({
+    action: 'transmitItems',
+    data: {
+      warehouse_id: 'warehouse123',
+      items: [
+        { id: 'item123', quantity: 10 }
+      ]
+    }
+  })
+});

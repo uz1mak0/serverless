@@ -1,0 +1,38 @@
+#set($doc_type = "ITEM")
+#set($type = $ctx.args.type)
+#set($channel = $util.defaultIfNullOrEmpty($ctx.args.channel, "ECOMM"))
+#set($nextToken = $util.defaultIfNullOrEmpty($ctx.args.next_token, null))
+
+#set($expression = "#doc_type = :doc_type")
+#set($expression = "#doc_type = :doc_type and begins_with(#filters, :filters)")
+#set($expNames = {
+    "#doc_type": "doc_type"
+})
+#set($expValues = {
+    ":doc_type": $util.dynamodb.toDynamoDB($doc_type)
+})
+
+#set($filters = "${channel}")
+
+
+#if(!$util.isNullOrEmpty($type))
+#set($filters = "${channel}_${type}")
+#end
+
+$utils.qr($expNames.put("#filters", "filters"))
+$utils.qr($expValues.put(":filters", $util.dynamodb.toDynamoDB($filters)))
+
+
+
+{
+    "version": "2017-02-28",
+    "operation": "Query",
+    "index": "DocType",
+    "query": {
+        "expression": "$expression",
+        "expressionNames": $util.toJson($expNames),
+        "expressionValues": $util.toJson($expValues)
+    },
+    "nextToken": $util.toJson($nextToken),
+    "scanIndexForward": false
+}

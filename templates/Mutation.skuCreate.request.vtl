@@ -1,0 +1,26 @@
+#set($attributes = $util.dynamodb.toMapValues($ctx.args.input))
+#set($now = $util.time.nowEpochSeconds())
+#set($id = $ctx.args.input.gtin)
+#set($channel = $util.defaultIfNullOrEmpty($ctx.args.input.channel, "ECOMM"))
+#set($attributes.doc_type = $util.dynamodb.toDynamoDB("SKU"))
+#set($attributes.date_created = $util.dynamodb.toDynamoDB($now))
+#set($attributes.filters = $util.dynamodb.toDynamoDB("${channel}SKU_$now"))
+
+#set($sort = "SKU")
+
+#if($channel == "DIRECT_RETAIL")
+    #set($sort = "SKU_DR")
+#end
+
+{
+    "version": "2017-02-28",
+    "operation": "PutItem",
+    "key": {
+        "id": $util.dynamodb.toDynamoDBJson($id),
+        "sort": $util.dynamodb.toDynamoDBJson($sort)
+    },
+    "attributeValues": $util.toJson($attributes),
+    "condition": {
+        "expression": "attribute_not_exists(id)"
+    }
+}

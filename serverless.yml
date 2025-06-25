@@ -1,0 +1,90 @@
+# Happy Coding!
+
+service: test-wms-ap
+
+#/////////////////////////////
+
+frameworkVersion: "3"
+
+#/////////////////////////////
+
+custom:
+  project: test-wms-api
+  stage: ${opt:stage, 'dev'}
+  serverless-offline:
+    httpPort: 4000
+    lambdaPort: 4002
+    noAuth: true
+  appSync: ${file(config/appSync.yml):appSync}
+
+
+#/////////////////////////////
+
+provider:
+  name: aws
+  stage: dev
+  runtime: nodejs18.x
+  region: ap-southeast-1
+  environment:
+   
+
+#////////////////////////////
+
+resources:
+  Resources:
+    RawTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: "${self:custom.project}-${self:custom.stage}"
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+          - AttributeName: sort
+            KeyType: RANGE
+        GlobalSecondaryIndexes:
+          - IndexName: DocType
+            KeySchema:
+              - AttributeName: doc_type
+                KeyType: HASH
+              - AttributeName: filters
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+          - IndexName: ByWarehouse
+            KeySchema:
+              - AttributeName: warehouse_id
+                KeyType: HASH
+              - AttributeName: date_created
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+        AttributeDefinitions:
+          - AttributeName: filters
+            AttributeType: S
+          - AttributeName: id
+            AttributeType: S
+          - AttributeName: sort
+            AttributeType: S
+          - AttributeName: doc_type
+            AttributeType: S
+        BillingMode: PAY_PER_REQUEST
+        StreamSpecification:
+          StreamViewType: NEW_AND_OLD_IMAGES
+        TimeToLiveSpecification:
+          AttributeName: ttl
+          Enabled: false
+
+
+#///////////////////////////////
+
+
+functions:
+#   - ${file(config/functions.yml):functions} 
+
+
+#///////////////////////////////
+
+
+plugins:
+  - serverless-offline
+  - serverless-appsync-plugin

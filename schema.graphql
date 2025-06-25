@@ -1,0 +1,161 @@
+type SKU @aws_cognito_user_pools {
+  id: String
+  sort: String
+  name: String
+  description: String
+  sku: String
+  unit_of_measure: String
+  type: ITEMType
+  gtin: String
+  price: Float
+  channel: ChannelType
+}
+
+enum SKUType {
+  ACCESSORIES
+  HEETS
+  DEVICES
+  ZYN
+}
+
+type Query {
+  skus(channel: ChannelType, next_token: String): ITEMConnection @aws_cognito_user_pools
+  sku(id: String!): SKU @aws_cognito_user_pools
+  Transactions(warehouse_id: ID!, date_filter: TimestampFilter): SaleTransactionConnection @aws_cognito_user_pools
+  TransactionSpecific(id: ID!): Transaction @aws_cognito_user_pools
+  warehouse(id: String): Warehouse @aws_cognito_user_pools
+  warehouses(channel: ChannelType, type: WarehouseType, next_token: String): WarehouseConnection @aws_cognito_user_pools
+}
+
+type Mutation {
+  skuCreate(input: SkuInput!): SKU @aws_cognito_user_pools
+  skuUpdate(input: SkuInput!): SKU @aws_cognito_user_pools
+  TransactionRecord(input: TransactionInput!): Transaction @aws_cognito_user_pools
+  warehouseCreate(input: WarehouseInput): Warehouse @aws_cognito_user_pools
+  warehouseUpdate(input: WarehouseInput): Warehouse @aws_cognito_user_pools
+}
+
+input SkuInput {
+  sku: String
+  sort: String
+  name: String
+  description: String
+  unit_of_measure: String
+  type: ITEMType
+  price: Float
+  gtin: String!
+  channel: ChannelType
+}
+
+type Transaction @aws_cognito_user_pools {
+  id: ID
+  transaction_id: ID
+  warehouse_id: ID
+  items: [LineItem]
+  remarks: String
+  cegid_no: String
+  transaction_type: TransactionType
+  created_by: ID
+  updated_by: ID
+  date_created: AWSTimestamp
+  date_updated: AWSTimestamp
+  order_date: String
+  customer_information: CustomerInformation
+  payment_type: String
+  payments_info: [PaymentInfo]
+  total_price: Float
+  type: String
+  date_input: AWSTimestamp
+}
+
+type PaymentInfo {
+  type: String
+  price: Float
+}
+
+type CustomerInformation {
+  last_name: String
+  first_name: String
+  mobile_number: String
+  email: String
+}
+
+enum TransactionType {
+  TRANSMITTAL
+  PULLOUT
+}
+
+input TimestampFilter {
+  from: AWSTimestamp!
+  to: AWSTimestamp!
+}
+
+input TransactionInput {
+  date_created: AWSTimestamp
+  created_by: String
+  transaction_no: ID
+  cegid_no: String
+  warehouse_id: ID
+  remarks: String
+  items: [LineItemInput]
+  type: String
+  customer_information: CustomerInformationInput
+  transaction_type: TransactionType
+  payment_type: String
+  total_price: Float
+}
+
+input CustomerInformationInput {
+  last_name: String
+  first_name: String
+  mobile_number: String
+  email: String
+}
+
+input TransmitItemInput {
+  quantity: Int!
+  warehouse_id: ID!
+}
+
+input PulloutItemInput {
+  quantity: Int!
+  warehouse_id: ID!
+}
+
+type WarehouseConnection @aws_cognito_user_pools {
+  items: [Warehouse]
+  next_token: String
+}
+
+type Warehouse @aws_cognito_user_pools {
+  id: String
+  name: String
+  type: WarehouseType
+  total_items: Int
+  channel: ChannelType
+}
+
+input WarehouseInput {
+  id: String!
+  name: String
+  type: WarehouseType
+  channel: ChannelType
+}
+
+enum WarehouseType {
+  WAREHOUSE
+  STORE
+  ROADSHOW
+  LENDING
+  CSC
+}
+
+enum ChannelType {
+  ECOMM
+  DIRECT_RETAIL
+}
+
+schema {
+  query: Query
+  mutation: Mutation
+}
