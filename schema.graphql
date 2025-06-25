@@ -21,8 +21,8 @@ enum SKUType {
 type Query {
   skus(channel: ChannelType, next_token: String): ITEMConnection @aws_cognito_user_pools
   sku(id: String!): SKU @aws_cognito_user_pools
-  Transactions(warehouse_id: ID!, date_filter: TimestampFilter): SaleTransactionConnection @aws_cognito_user_pools
-  TransactionSpecific(id: ID!): Transaction @aws_cognito_user_pools
+  transactions(warehouse_id: ID!, date_filter: TimestampFilter): SaleTransactionConnection @aws_cognito_user_pools
+  transactionSpecific(id: ID!): Transaction @aws_cognito_user_pools
   warehouse(id: String): Warehouse @aws_cognito_user_pools
   warehouses(channel: ChannelType, type: WarehouseType, next_token: String): WarehouseConnection @aws_cognito_user_pools
 }
@@ -30,7 +30,7 @@ type Query {
 type Mutation {
   skuCreate(input: SkuInput!): SKU @aws_cognito_user_pools
   skuUpdate(input: SkuInput!): SKU @aws_cognito_user_pools
-  TransactionRecord(input: TransactionInput!): Transaction @aws_cognito_user_pools
+  transactionCreate(input: TransactionInput!): Transaction @aws_cognito_user_pools
   warehouseCreate(input: WarehouseInput): Warehouse @aws_cognito_user_pools
   warehouseUpdate(input: WarehouseInput): Warehouse @aws_cognito_user_pools
 }
@@ -41,7 +41,7 @@ input SkuInput {
   name: String
   description: String
   unit_of_measure: String
-  type: ITEMType
+  type: ITEMTypeInput
   price: Float
   gtin: String!
   channel: ChannelType
@@ -153,6 +153,45 @@ enum WarehouseType {
 enum ChannelType {
   ECOMM
   DIRECT_RETAIL
+}
+
+type ITEMType {
+  id: ID!
+  name: String
+  description: String
+  # Add other fields as needed
+}
+
+input ITEMTypeInput {
+  id: ID
+  name: String
+  description: String
+  # Add other fields as needed
+}
+
+type ITEMConnection {
+  items: [ITEMType]
+  nextToken: String
+}
+
+type SaleTransactionConnection {
+  items: [Transaction]
+  nextToken: String
+}
+
+type LineItem {
+  id: ID!
+  sku: String
+  quantity: Int
+  price: Float
+  # Add other fields as needed
+}
+
+input LineItemInput {
+  sku: String!
+  quantity: Int!
+  price: Float
+  # Add other fields as needed
 }
 
 schema {

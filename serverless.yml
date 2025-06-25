@@ -1,6 +1,6 @@
 # Happy Coding!
 
-service: test-wms-ap
+service: test-wms-api
 
 #/////////////////////////////
 
@@ -66,6 +66,10 @@ resources:
           - AttributeName: sort
             AttributeType: S
           - AttributeName: doc_type
+            AttributeType: S
+          - AttributeName: warehouse_id
+            AttributeType: S
+          - AttributeName: date_created
             AttributeType: S
         BillingMode: PAY_PER_REQUEST
         StreamSpecification:
