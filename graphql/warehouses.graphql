@@ -13,10 +13,10 @@ type Query {
     channel: ChannelType
     type: WarehouseType
     next_token: String
-  ): WarehouseConnection @aws_cognito_user_pools
+  ): WarehouseCollection @aws_cognito_user_pools
 }
 
-type WarehouseConnection @aws_cognito_user_pools {
+type WarehouseCollection @aws_cognito_user_pools {
   items: [Warehouse]
 
   next_token: String
@@ -40,9 +40,7 @@ input WarehouseInput {
 enum WarehouseType {
   WAREHOUSE
   STORE
-  ROADSHOW
   LENDING
-  CSC
 }
 
 enum ChannelType {

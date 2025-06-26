@@ -18,8 +18,14 @@ enum SKUType {
     ZYN
 }
 
+type SkuCollection @aws_cognito_user_pools {
+  items: [SKU]
+
+  next_token: String
+}
+
 type Query {
-    skus(channel: ChannelType, next_token: String): SKU
+    skus(channel: ChannelType, next_token: String): SkuCollection
     @aws_cognito_user_pools
 
     sku(id: String!): SKU @aws_cognito_user_pools
