@@ -2,12 +2,12 @@
   "devDependencies": {
     "aws-sdk": "^2.1692.0",
     "serverless-appsync-plugin": "^1.14.0",
-    "serverless-offline": "^14.4.0"
+    "serverless-offline": "^14.4.0",
+    "vitest": "^3.2.4"
   },
   "scripts": {
     "compile": "node graphql/index.js",
-    "test": "ava",
-    "watch:test": "ava - --watch"
+    "test": "vitest"
   },
   "dependencies": {
     "dotenv": "^16.5.0",

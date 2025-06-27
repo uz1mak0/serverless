@@ -18,6 +18,7 @@ const generateId = () => {
 
 // Item Management
 const createItem = async (item) => {
+ try {
   const params = {
     TableName: ITEMS_TABLE,
     Item: {
@@ -25,41 +26,52 @@ const createItem = async (item) => {
       ...item,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString()
-    }
+    },
   };
   await dynamoDB.put(params).promise();
   return params.Item;
+ }catch(e){
+    throw new Error("There's an error creating item");
+ } 
 };
 
 // Warehouse Management
 const createWarehouse = async (warehouse) => {
-  const params = {
-    TableName: WAREHOUSES_TABLE,
-    Item: {
-      id: generateId(),
-      ...warehouse,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
-    }
-  };
-  await dynamoDB.put(params).promise();
-  return params.Item;
+  try {
+    const params = {
+      TableName: WAREHOUSES_TABLE,
+      Item: {
+        id: generateId(),
+        ...warehouse,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      }
+    };
+    await dynamoDB.put(params).promise();
+    return params.Item;
+  }catch(e){
+    throw new Error("There's an error creating new warehouse_id");
+  }
 };
 
 // Transaction Management
 const createTransaction = async (transaction) => {
-  const transactionId = generateId();
-  const params = {
-    TableName: TRANSACTIONS_TABLE,
-    Item: {
-      id: transactionId,
-      ...transaction,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
+  try {
+    const transactionId = generateId();
+    const params = {
+      TableName: TRANSACTIONS_TABLE,
+        Item: {
+          id: transactionId,
+          ...transaction,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
     }
   };
   await dynamoDB.put(params).promise();
   return params.Item;
+  }catch(e){
+    throw new Error("There's an error creating new transaction");
+  }
 };
 
 // Inventory Movement (Transmittal/Pullout)
